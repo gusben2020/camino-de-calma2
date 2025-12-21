@@ -1,11 +1,11 @@
-<div align="center">
+# Camino de Calma 🌿
+**Juego Terapéutico y Educativo - Versión 1.1.0**
 
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+Aplicación diseñada para niños con desafíos en el desarrollo, enfocada en la calma, la asociación y la coordinación motriz fina.
 
-  <h1>Built with AI Studio</h2>
+## Estado del Despliegue
+- **Framework:** React 19 + Vite 6
+- **Hosting:** Vercel
+- **Repositorio Principal:** camino-de-calma1
 
-  <p>The fastest path from prompt to production with Gemini.</p>
-
-  <a href="https://aistudio.google.com/apps">Start building</a>
-
-</div>
+Desarrollado con enfoque terapéutico, eliminando la competencia y el estrés.
