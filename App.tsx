@@ -5,6 +5,7 @@ import { DEFAULT_SETTINGS } from './constants';
 import Configuration from './components/Configuration';
 import GameBoard from './components/GameBoard';
 import DriveBoard from './components/DriveBoard';
+import CatchBoard from './components/CatchBoard';
 import UniverseMenu from './components/UniverseMenu';
 import HomeMenu from './components/HomeMenu';
 
@@ -16,11 +17,29 @@ const App: React.FC = () => {
   const [settings, setSettings] = useState<GameSettings>(DEFAULT_SETTINGS);
   const [isConfigOpen, setIsConfigOpen] = useState(false);
   const [isGameFinished, setIsGameFinished] = useState(false);
+  const [isPaused, setIsPaused] = useState(false); 
   const [configLockTime, setConfigLockTime] = useState(0);
+  const [gameKey, setGameKey] = useState(0); // Clave para forzar reinicio completo
+  
   const lockTimerRef = useRef<number | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
+  const victoryAudioCtxRef = useRef<AudioContext | null>(null);
 
-  const gameMusic = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-15.mp3"; 
+  const gameMusic = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"; 
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.code === 'Space' && view === 'GAME' && !isConfigOpen && !isGameFinished) {
+        e.preventDefault();
+        setIsPaused(prev => !prev);
+        if (victoryAudioCtxRef.current?.state === 'suspended') {
+          victoryAudioCtxRef.current.resume();
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [view, isConfigOpen, isGameFinished]);
 
   useEffect(() => {
     const saved = localStorage.getItem('camino_calma_settings');
@@ -40,53 +59,102 @@ const App: React.FC = () => {
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = settings.musicVolume;
-      if (settings.musicEnabled && view === 'GAME') {
+      if (settings.musicEnabled && view === 'GAME' && !isPaused && !isGameFinished) {
         audioRef.current.play().catch(() => {});
       } else {
         audioRef.current.pause();
       }
     }
-  }, [settings.musicVolume, settings.musicEnabled, view]);
+  }, [settings.musicVolume, settings.musicEnabled, view, isPaused, isGameFinished]);
+
+  const speakReinforcement = useCallback(() => {
+    if (!settings.voiceEnabled) return;
+    window.speechSynthesis.cancel();
+    const msg = `¡Excelente! ¡Lo has hecho muy bien ${settings.userName}!`;
+    const utterance = new SpeechSynthesisUtterance(msg.toLowerCase());
+    utterance.lang = 'es-ES';
+    utterance.rate = 1.0;
+    utterance.pitch = 1.2;
+    window.speechSynthesis.speak(utterance);
+  }, [settings.voiceEnabled, settings.userName]);
+
+  const playVictoryFanfare = useCallback(() => {
+    if (!victoryAudioCtxRef.current) {
+      victoryAudioCtxRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+    }
+    const ctx = victoryAudioCtxRef.current;
+    if (ctx.state === 'suspended') ctx.resume();
+
+    const vol = Math.max(0.4, settings.musicVolume * 1.5);
+    const notes = [523.25, 659.25, 783.99, 1046.50];
+    
+    notes.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.1);
+      gain.gain.setValueAtTime(0, ctx.currentTime + i * 0.1);
+      gain.gain.linearRampToValueAtTime(vol / 4, ctx.currentTime + i * 0.1 + 0.05);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + i * 0.1 + 0.8);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(ctx.currentTime + i * 0.1);
+      osc.stop(ctx.currentTime + i * 0.1 + 0.8);
+    });
+  }, [settings.musicVolume]);
 
   const handleSelectGame = (type: GameType) => {
     setGameType(type);
     setView('UNIVERSE_SELECT');
+    setIsPaused(false);
   };
 
   const handleUpdateSettings = (newSettings: Partial<GameSettings>) => {
     setSettings(prev => ({ ...prev, ...newSettings }));
     setIsGameFinished(false);
+    // Si se actualizan cosas críticas como cantidad de objetos, forzamos reinicio
+    if (newSettings.itemCount !== undefined || newSettings.universe !== undefined) {
+      setGameKey(k => k + 1);
+    }
   };
 
-  const handleSelectUniverse = (type: UniverseType) => {
-    setSettings(prev => ({ ...prev, universe: type }));
+  const handleSelectUniverse = (universe: UniverseType) => {
+    handleUpdateSettings({ universe });
     setView('GAME');
-    setIsGameFinished(false);
+    setIsPaused(false);
+    setGameKey(k => k + 1); // Nueva sesión al cambiar de universo
   };
 
   const handleBack = () => {
     if (view === 'GAME') setView('UNIVERSE_SELECT');
     else if (view === 'UNIVERSE_SELECT') setView('HOME');
     setIsGameFinished(false);
+    setIsPaused(false);
   };
 
   const handleGameComplete = useCallback(() => {
     setIsGameFinished(true);
-    const winAudio = new Audio("https://actions.google.com/sounds/v1/foley/festive_celebration.ogg");
-    winAudio.volume = Math.min(1, settings.musicVolume + 0.2);
-    winAudio.play().catch(() => {});
-  }, [settings.musicVolume]);
+    playVictoryFanfare();
+    setTimeout(speakReinforcement, 400);
+  }, [playVictoryFanfare, speakReinforcement]);
+
+  const handleRestart = () => {
+    setIsGameFinished(false);
+    setIsPaused(false);
+    setGameKey(k => k + 1); // ELIMINA EL JUEGO VIEJO Y CREA UNO NUEVO
+  };
 
   const handleLockStart = () => {
     const start = Date.now();
     lockTimerRef.current = window.setInterval(() => {
       const elapsed = Date.now() - start;
-      const progress = Math.min(100, (elapsed / 2000) * 100);
+      const progress = Math.min(100, (elapsed / 1000) * 100);
       setConfigLockTime(progress);
       if (progress >= 100) {
         clearInterval(lockTimerRef.current!);
         setIsConfigOpen(true);
         setConfigLockTime(0);
+        setIsPaused(true);
       }
     }, 50);
   };
@@ -99,7 +167,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-slate-50 relative">
+    <div className="flex h-screen w-screen overflow-hidden bg-slate-50 relative" onMouseDown={() => victoryAudioCtxRef.current?.resume()}>
       <audio ref={audioRef} loop src={gameMusic} />
 
       {view === 'HOME' && <HomeMenu onSelectGame={handleSelectGame} />}
@@ -117,10 +185,13 @@ const App: React.FC = () => {
 
       {view === 'GAME' && (
         <div className={`flex flex-1 relative transition-all duration-500 ${isConfigOpen ? 'opacity-30 blur-sm' : 'opacity-100'}`}>
+          {/* El uso de la propiedad key={gameKey} es lo que garantiza que el juego se limpie al 100% */}
           {gameType === GameType.DRAG ? (
-            <GameBoard settings={settings} onComplete={handleGameComplete} isFinished={isGameFinished} />
+            <GameBoard key={gameKey} settings={settings} onComplete={handleGameComplete} isFinished={isGameFinished} />
+          ) : gameType === GameType.DRIVE ? (
+            <DriveBoard key={gameKey} settings={settings} onComplete={handleGameComplete} isFinished={isGameFinished} isPaused={isPaused} onPauseToggle={() => setIsPaused(p => !p)} />
           ) : (
-            <DriveBoard settings={settings} onComplete={handleGameComplete} isFinished={isGameFinished} />
+            <CatchBoard key={gameKey} settings={settings} onComplete={handleGameComplete} isFinished={isGameFinished} />
           )}
           
           <div className="absolute top-4 left-4 z-50 flex gap-3">
@@ -142,7 +213,14 @@ const App: React.FC = () => {
 
       {isConfigOpen && (
         <div className="absolute inset-0 z-[100] flex justify-end bg-black/10 backdrop-blur-sm">
-          <div className="w-full md:w-[400px] h-full bg-white shadow-2xl"><Configuration settings={settings} onUpdate={handleUpdateSettings} onClose={() => setIsConfigOpen(false)} /></div>
+          <div className="w-full md:w-[400px] h-full bg-white shadow-2xl">
+            <Configuration 
+              settings={settings} 
+              onUpdate={handleUpdateSettings} 
+              onClose={() => { setIsConfigOpen(false); setIsPaused(false); }} 
+              gameType={gameType}
+            />
+          </div>
         </div>
       )}
 
@@ -152,15 +230,10 @@ const App: React.FC = () => {
              <div className="absolute -top-16 left-1/2 -translate-x-1/2 text-[10rem] animate-bounce">🎊</div>
              <h2 className="text-8xl mb-8 filter drop-shadow-lg">🌟</h2>
              <h3 className="text-6xl font-black text-emerald-600 mb-6 tracking-tight uppercase">¡EXCELENTE!</h3>
-             <p className="text-2xl text-slate-400 mb-12 font-bold uppercase tracking-widest">Lo lograste muy bien</p>
+             <p className="text-2xl text-slate-400 mb-12 font-bold uppercase tracking-widest">Lo has hecho muy bien {settings.userName}</p>
              <div className="flex flex-col md:flex-row gap-8 justify-center">
-               <button onClick={() => setIsGameFinished(false)} className="px-16 py-6 bg-emerald-500 hover:bg-emerald-600 text-white text-2xl font-black rounded-full shadow-2xl transition-all active:scale-90 uppercase tracking-tighter">VOLVER A JUGAR</button>
+               <button onClick={handleRestart} className="px-16 py-6 bg-emerald-500 hover:bg-emerald-600 text-white text-2xl font-black rounded-full shadow-2xl transition-all active:scale-90 uppercase tracking-tighter">VOLVER A JUGAR</button>
                <button onClick={handleBack} className="px-16 py-6 bg-slate-100 hover:bg-slate-200 text-slate-500 text-2xl font-black rounded-full transition-all active:scale-90 uppercase tracking-tighter">MENU</button>
-             </div>
-             <div className="mt-12 flex justify-center gap-6 opacity-30">
-               <span className="text-5xl">🚜</span>
-               <span className="text-5xl">🐷</span>
-               <span className="text-5xl">🦆</span>
              </div>
           </div>
         </div>

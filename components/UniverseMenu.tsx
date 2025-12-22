@@ -18,8 +18,8 @@ const UniverseMenu: React.FC<UniverseMenuProps> = ({ onSelect, currentUniverse }
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full max-w-6xl">
         {Object.values(UNIVERSES).map((universe) => {
-          // Tomar el emoji del primer item del universo para representar el mundo
-          const icon = universe.items[0]?.image || '✨';
+          // Icono especial para el universo aleatorio
+          const icon = universe.type === UniverseType.ALEATORIO ? '🌈' : (universe.items[0]?.image || '✨');
           
           return (
             <button
@@ -35,7 +35,6 @@ const UniverseMenu: React.FC<UniverseMenuProps> = ({ onSelect, currentUniverse }
                 {universe.title}
               </span>
               
-              {/* Overlay decorativo suave */}
               <div className="absolute inset-0 opacity-0 group-hover:opacity-5 pointer-events-none transition-opacity">
                 <div className="absolute inset-0 bg-blue-500" />
               </div>

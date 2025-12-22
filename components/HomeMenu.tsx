@@ -18,11 +18,11 @@ const HomeMenu: React.FC<HomeMenuProps> = ({ onSelectGame }) => {
         </p>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-8 w-full max-w-4xl">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl px-4">
         {/* Juego de Arrastrar */}
         <button
           onClick={() => onSelectGame(GameType.DRAG)}
-          className="flex-1 group relative bg-white p-10 rounded-[3rem] shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border-b-8 border-blue-200 active:border-b-0 active:translate-y-1"
+          className="group relative bg-white p-10 rounded-[3rem] shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border-b-8 border-blue-200 active:border-b-0 active:translate-y-1"
         >
           <div className="text-8xl mb-6 transform group-hover:scale-110 transition-transform duration-500">
             🧩
@@ -34,13 +34,28 @@ const HomeMenu: React.FC<HomeMenuProps> = ({ onSelectGame }) => {
           </div>
         </button>
 
+        {/* Juego de Atrapa */}
+        <button
+          onClick={() => onSelectGame(GameType.CATCH)}
+          className="group relative bg-white p-10 rounded-[3rem] shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border-b-8 border-amber-200 active:border-b-0 active:translate-y-1"
+        >
+          <div className="text-8xl mb-6 transform group-hover:scale-110 transition-transform duration-500">
+            🍎
+          </div>
+          <h2 className="text-2xl font-black text-slate-700 uppercase mb-2">Atrapar</h2>
+          <p className="text-slate-400 font-medium">Pasa el mouse para atrapar</p>
+          <div className="absolute top-4 right-4 bg-amber-100 text-amber-600 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
+            Jugar
+          </div>
+        </button>
+
         {/* Juego de Conducir */}
         <button
           onClick={() => onSelectGame(GameType.DRIVE)}
-          className="flex-1 group relative bg-white p-10 rounded-[3rem] shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border-b-8 border-emerald-200 active:border-b-0 active:translate-y-1"
+          className="group relative bg-white p-10 rounded-[3rem] shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border-b-8 border-emerald-200 active:border-b-0 active:translate-y-1"
         >
           <div className="text-8xl mb-6 transform group-hover:scale-110 transition-transform duration-500">
-            🚗
+            🚜
           </div>
           <h2 className="text-2xl font-black text-slate-700 uppercase mb-2">Conducir</h2>
           <p className="text-slate-400 font-medium">Atrapa los elementos</p>

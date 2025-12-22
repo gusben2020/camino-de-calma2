@@ -1,19 +1,32 @@
 
 import React from 'react';
-import { GameSettings, UniverseType, WordLevel } from '../types';
-import { UNIVERSES } from '../constants';
+import { GameSettings, UniverseType, WordLevel, GameType } from '../types';
 
 interface ConfigurationProps {
   settings: GameSettings;
   onUpdate: (settings: Partial<GameSettings>) => void;
   onClose: () => void;
+  gameType: GameType;
 }
 
-const Configuration: React.FC<ConfigurationProps> = ({ settings, onUpdate, onClose }) => {
+const Configuration: React.FC<ConfigurationProps> = ({ settings, onUpdate, onClose, gameType }) => {
+  const isDragMode = gameType === GameType.DRAG;
+
+  // Etiquetas personalizadas según el modo de juego
+  const levels = isDragMode ? [
+    { level: WordLevel.COMPLETA, label: 'Palabra Completa (VACA)' },
+    { level: WordLevel.SEGMENTADA, label: 'Sílaba / Segmento (VA - CA)' },
+    { level: WordLevel.LETRA_POR_LETRA, label: 'Letra por Letra (V-A-C-A)' }
+  ] : [
+    { level: WordLevel.COMPLETA, label: 'Lento (Relajado)' },
+    { level: WordLevel.SEGMENTADA, label: 'Normal (Fluido)' },
+    { level: WordLevel.LETRA_POR_LETRA, label: 'Rápido (Desafío)' }
+  ];
+
   return (
     <div className="h-full flex flex-col p-8 overflow-y-auto">
       <div className="flex items-center justify-between mb-8">
-        <h2 className="text-2xl font-bold text-slate-700">Panel de Control</h2>
+        <h2 className="text-2xl font-bold text-slate-700">Ajustes del Juego</h2>
         <button 
           onClick={onClose}
           className="p-2 hover:bg-slate-100 rounded-full transition-colors"
@@ -25,27 +38,17 @@ const Configuration: React.FC<ConfigurationProps> = ({ settings, onUpdate, onClo
       </div>
 
       <div className="space-y-8">
-        {/* Universo */}
         <section>
-          <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Universo Visual</label>
-          <div className="grid grid-cols-2 gap-3">
-            {Object.values(UNIVERSES).map(u => (
-              <button
-                key={u.type}
-                onClick={() => onUpdate({ universe: u.type })}
-                className={`p-3 rounded-xl border-2 text-sm font-medium transition-all ${
-                  settings.universe === u.type 
-                    ? 'border-blue-500 bg-blue-50 text-blue-700' 
-                    : 'border-slate-100 hover:border-slate-200 text-slate-600'
-                }`}
-              >
-                {u.title}
-              </button>
-            ))}
-          </div>
+          <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Nombre del Jugador</label>
+          <input 
+            type="text"
+            value={settings.userName}
+            onChange={(e) => onUpdate({ userName: e.target.value.toUpperCase() })}
+            placeholder="NOMBRE"
+            className="w-full px-4 py-3 rounded-xl border-2 border-slate-100 focus:border-blue-500 focus:outline-none font-bold text-slate-700 transition-all"
+          />
         </section>
 
-        {/* Cantidad de Objetos */}
         <section>
           <div className="flex justify-between items-center mb-3">
             <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Cantidad de Objetos</label>
@@ -61,21 +64,18 @@ const Configuration: React.FC<ConfigurationProps> = ({ settings, onUpdate, onClo
           />
         </section>
 
-        {/* Nivel de Palabra */}
         <section>
-          <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Nivel de Lectura</label>
+          <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">
+            {isDragMode ? 'Nivel de Lectura' : 'Velocidad de desplazamiento'}
+          </label>
           <div className="flex flex-col gap-2">
-            {[
-              { level: WordLevel.COMPLETA, label: 'Palabra Completa (VACA)' },
-              { level: WordLevel.SEGMENTADA, label: 'Sílaba / Segmento (VA - CA)' },
-              { level: WordLevel.LETRA_POR_LETRA, label: 'Letra por Letra (V-A-C-A)' }
-            ].map(l => (
+            {levels.map(l => (
               <button
                 key={l.level}
                 onClick={() => onUpdate({ wordLevel: l.level })}
                 className={`p-3 rounded-xl border-2 text-left text-sm transition-all ${
                   settings.wordLevel === l.level 
-                    ? 'border-blue-500 bg-blue-50 text-blue-700' 
+                    ? 'border-blue-500 bg-blue-50 text-blue-700 font-bold' 
                     : 'border-slate-100 hover:border-slate-200 text-slate-600'
                 }`}
               >
@@ -85,7 +85,6 @@ const Configuration: React.FC<ConfigurationProps> = ({ settings, onUpdate, onClo
           </div>
         </section>
 
-        {/* Toggles */}
         <section className="space-y-4 pt-4 border-t border-slate-100">
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium text-slate-600">Mostrar Palabras</span>
@@ -95,28 +94,12 @@ const Configuration: React.FC<ConfigurationProps> = ({ settings, onUpdate, onClo
             />
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-slate-600">Palabras Arrastrables</span>
-            <Toggle 
-              checked={settings.wordsAsObjects} 
-              onChange={(val) => onUpdate({ wordsAsObjects: val })} 
-            />
-          </div>
-          <div className="flex items-center justify-between">
             <span className="text-sm font-medium text-slate-600">Voz Narradora</span>
             <Toggle 
               checked={settings.voiceEnabled} 
               onChange={(val) => onUpdate({ voiceEnabled: val })} 
             />
           </div>
-          {settings.wordsAsObjects && settings.voiceEnabled && (
-            <div className="flex items-center justify-between pl-4">
-              <span className="text-xs font-medium text-slate-500">Pronunciación Parcial</span>
-              <Toggle 
-                checked={settings.partialVoiceEnabled} 
-                onChange={(val) => onUpdate({ partialVoiceEnabled: val })} 
-              />
-            </div>
-          )}
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium text-slate-600">Música de Fondo</span>
             <Toggle 
@@ -137,13 +120,6 @@ const Configuration: React.FC<ConfigurationProps> = ({ settings, onUpdate, onClo
               />
              </div>
           )}
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-medium text-slate-600">Ver Moldes</span>
-            <Toggle 
-              checked={settings.showMolds} 
-              onChange={(val) => onUpdate({ showMolds: val })} 
-            />
-          </div>
         </section>
       </div>
 
@@ -154,7 +130,7 @@ const Configuration: React.FC<ConfigurationProps> = ({ settings, onUpdate, onClo
         >
           VOLVER AL JUEGO
         </button>
-        <p className="text-center text-[10px] text-slate-400 mt-4 uppercase tracking-widest">Camino de Calma v1.0</p>
+        <p className="text-center text-[10px] text-slate-400 mt-4 uppercase tracking-widest">Camino de Calma v1.2</p>
       </div>
     </div>
   );

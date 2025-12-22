@@ -2,7 +2,7 @@
 import React from 'react';
 import { UniverseType, Universe, WordLevel, GameSettings } from './types';
 
-export const UNIVERSES: Record<UniverseType, Universe> = {
+const BASE_UNIVERSES: Record<string, Universe> = {
   [UniverseType.GRANJA]: {
     type: UniverseType.GRANJA,
     title: 'La Granja',
@@ -10,7 +10,7 @@ export const UNIVERSES: Record<UniverseType, Universe> = {
     illustration: 'https://picsum.photos/seed/farm/800/600',
     items: [
       { id: 'vaca', name: 'VACA', image: '🐄', color: '#fefce8' },
-      { id: 'chancho', name: 'CHANCHO', image: '🐷', color: '#fdf2f8' },
+      { id: 'cerdo', name: 'CERDO', image: '🐷', color: '#fdf2f8' },
       { id: 'gallina', name: 'GALLINA', image: '🐔', color: '#fff7ed' },
       { id: 'oveja', name: 'OVEJA', image: '🐑', color: '#f8fafc' },
       { id: 'caballo', name: 'CABALLO', image: '🐎', color: '#fef3c7' },
@@ -18,7 +18,7 @@ export const UNIVERSES: Record<UniverseType, Universe> = {
       { id: 'tractor', name: 'TRACTOR', image: '🚜', color: '#fef2f2' },
       { id: 'pajarito', name: 'PAJARITO', image: '🐦', color: '#eff6ff' },
       { id: 'sol', name: 'SOL', image: '☀️', color: '#fff7ed' },
-      { id: 'arbol', name: 'ARBOL', image: '🌳', color: '#f0fdf4' },
+      { id: 'arbol', name: 'ÁRBOL', image: '🌳', color: '#f0fdf4' },
       { id: 'flor', name: 'FLOR', image: '🌸', color: '#fdf2f8' },
       { id: 'nube', name: 'NUBE', image: '☁️', color: '#f8fafc' },
     ]
@@ -29,16 +29,16 @@ export const UNIVERSES: Record<UniverseType, Universe> = {
     backgroundColor: '#eff6ff',
     illustration: 'https://picsum.photos/seed/shapes/800/600',
     items: [
-      { id: 'circulo', name: 'CIRCULO', image: '⭕', color: '#fee2e2' },
+      { id: 'circulo', name: 'CÍRCULO', image: '⭕', color: '#fee2e2' },
       { id: 'cuadrado', name: 'CUADRADO', image: '⏹️', color: '#dcfce7' },
-      { id: 'triangulo', name: 'TRIANGULO', image: '🔼', color: '#fef9c3' },
+      { id: 'triangulo', name: 'TRIÁNGULO', image: '🔼', color: '#fef9c3' },
       { id: 'estrella', name: 'ESTRELLA', image: '⭐', color: '#fae8ff' },
       { id: 'rombo', name: 'ROMBO', image: '💎', color: '#e0e7ff' },
-      { id: 'hexagono', name: 'HEXAGONO', image: '⬢', color: '#fef3c7' },
-      { id: 'corazon', name: 'CORAZON', image: '❤️', color: '#ffe4e6' },
+      { id: 'hexagono', name: 'HEXÁGONO', image: '⬢', color: '#fef3c7' },
+      { id: 'corazon', name: 'CORAZÓN', image: '❤️', color: '#ffe4e6' },
       { id: 'luna', name: 'LUNA', image: '🌙', color: '#f1f5f9' },
-      { id: 'pentagono', name: 'PENTAGONO', image: '⬟', color: '#f0fdf4' },
-      { id: 'ovalo', name: 'OVALO', image: '🥚', color: '#fffbeb' },
+      { id: 'pentagono', name: 'PENTÁGONO', image: '⬟', color: '#f0fdf4' },
+      { id: 'ovalo', name: 'ÓVALO', image: '🥚', color: '#fffbeb' },
       { id: 'cruz', name: 'CRUZ', image: '➕', color: '#fdf2f8' },
       { id: 'rayo', name: 'RAYO', image: '⚡', color: '#fffbeb' },
     ]
@@ -60,7 +60,7 @@ export const UNIVERSES: Record<UniverseType, Universe> = {
       { id: 'nueve', name: 'NUEVE', image: '9️⃣', color: '#f5f3ff' },
       { id: 'diez', name: 'DIEZ', image: '🔟', color: '#fff1f2' },
       { id: 'cero', name: 'CERO', image: '0️⃣', color: '#f8fafc' },
-      { id: 'mas', name: 'MAS', image: '➕', color: '#f0fdfa' },
+      { id: 'mas', name: 'MÁS', image: '➕', color: '#f0fdfa' },
     ]
   },
   [UniverseType.FRUTAS]: {
@@ -75,11 +75,11 @@ export const UNIVERSES: Record<UniverseType, Universe> = {
       { id: 'uva', name: 'UVA', image: '🍇', color: '#f5f3ff' },
       { id: 'naranja', name: 'NARANJA', image: '🍊', color: '#fff7ed' },
       { id: 'frutilla', name: 'FRUTILLA', image: '🍓', color: '#fff1f2' },
-      { id: 'sandia', name: 'SANDIA', image: '🍉', color: '#f0fdf4' },
+      { id: 'sandia', name: 'SANDÍA', image: '🍉', color: '#f0fdf4' },
       { id: 'cereza', name: 'CEREZA', image: '🍒', color: '#fef2f2' },
       { id: 'pina', name: 'PIÑA', image: '🍍', color: '#fffbeb' },
       { id: 'kiwi', name: 'KIWI', image: '🥝', color: '#f7fee7' },
-      { id: 'limon', name: 'LIMON', image: '🍋', color: '#fefce8' },
+      { id: 'limon', name: 'LIMÓN', image: '🍋', color: '#fefce8' },
       { id: 'durazno', name: 'DURAZNO', image: '🍑', color: '#fff7ed' },
     ]
   },
@@ -95,7 +95,7 @@ export const UNIVERSES: Record<UniverseType, Universe> = {
       { id: 'zorro', name: 'ZORRO', image: '🦊', color: '#fff7ed' },
       { id: 'hongo', name: 'HONGO', image: '🍄', color: '#fef2f2' },
       { id: 'ardilla', name: 'ARDILLA', image: '🐿️', color: '#fefce8' },
-      { id: 'buho', name: 'BUHO', image: '🦉', color: '#f5f3ff' },
+      { id: 'buho', name: 'BÚHO', image: '🦉', color: '#f5f3ff' },
       { id: 'ciervo', name: 'CIERVO', image: '🦌', color: '#fffbeb' },
       { id: 'lobo', name: 'LOBO', image: '🐺', color: '#f1f5f9' },
       { id: 'abeja', name: 'ABEJA', image: '🐝', color: '#fef9c3' },
@@ -130,7 +130,7 @@ export const UNIVERSES: Record<UniverseType, Universe> = {
     illustration: 'https://picsum.photos/seed/clothing/800/600',
     items: [
       { id: 'remera', name: 'REMERA', image: '👕', color: '#ffffff' },
-      { id: 'pantalon', name: 'PANTALON', image: '👖', color: '#ffffff' },
+      { id: 'pantalon', name: 'PANTALÓN', image: '👖', color: '#ffffff' },
       { id: 'gorra', name: 'GORRA', image: '🧢', color: '#ffffff' },
       { id: 'zapato', name: 'ZAPATO', image: '👟', color: '#ffffff' },
       { id: 'media', name: 'MEDIA', image: '🧦', color: '#ffffff' },
@@ -145,7 +145,24 @@ export const UNIVERSES: Record<UniverseType, Universe> = {
   },
 };
 
+// Generar el Universo Aleatorio combinando todos los demás
+const allItems = Object.values(BASE_UNIVERSES).flatMap(u => u.items);
+// Mezcla simple para el universo aleatorio inicial
+const shuffledAllItems = [...allItems].sort(() => Math.random() - 0.5);
+
+export const UNIVERSES: Record<UniverseType, Universe> = {
+  ...BASE_UNIVERSES,
+  [UniverseType.ALEATORIO]: {
+    type: UniverseType.ALEATORIO,
+    title: 'Mundo Mágico',
+    backgroundColor: '#f5f3ff', // Un tono violeta mágico
+    illustration: 'https://picsum.photos/seed/magic/800/600',
+    items: shuffledAllItems
+  }
+} as Record<UniverseType, Universe>;
+
 export const DEFAULT_SETTINGS: GameSettings = {
+  userName: 'SANTI',
   universe: UniverseType.GRANJA,
   itemCount: 4,
   showWords: true,

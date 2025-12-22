@@ -6,12 +6,14 @@ export enum UniverseType {
   FRUTAS = 'FRUTAS',
   BOSQUE = 'BOSQUE',
   HERRAMIENTAS = 'HERRAMIENTAS',
-  VESTUARIO = 'VESTUARIO'
+  VESTUARIO = 'VESTUARIO',
+  ALEATORIO = 'ALEATORIO'
 }
 
 export enum GameType {
   DRAG = 'DRAG',
-  DRIVE = 'DRIVE'
+  DRIVE = 'DRIVE',
+  CATCH = 'CATCH'
 }
 
 export enum WordLevel {
@@ -43,6 +45,7 @@ export interface Universe {
 }
 
 export interface GameSettings {
+  userName: string;
   universe: UniverseType;
   itemCount: number;
   showWords: boolean;
