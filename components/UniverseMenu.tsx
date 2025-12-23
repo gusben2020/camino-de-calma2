@@ -1,19 +1,33 @@
 
 import React from 'react';
-import { UniverseType } from '../types';
+import { UniverseType, GameType } from '../types';
 import { UNIVERSES } from '../constants';
 
 interface UniverseMenuProps {
   onSelect: (type: UniverseType) => void;
   currentUniverse: UniverseType;
+  gameType: GameType;
 }
 
-const UniverseMenu: React.FC<UniverseMenuProps> = ({ onSelect, currentUniverse }) => {
+const gameThemes: Record<GameType, { name: string; color: string; classes: string }> = {
+  [GameType.DRAG]: { name: 'Arrastrar', color: 'blue', classes: 'bg-blue-500 text-blue-800' },
+  [GameType.CATCH]: { name: 'Atrapar', color: 'amber', classes: 'bg-amber-400 text-amber-800' },
+  [GameType.PUZZLE]: { name: 'Puzzle', color: 'violet', classes: 'bg-violet-500 text-violet-800' },
+  [GameType.DRIVE]: { name: 'Conducir', color: 'emerald', classes: 'bg-emerald-500 text-emerald-800' },
+};
+
+const UniverseMenu: React.FC<UniverseMenuProps> = ({ onSelect, currentUniverse, gameType }) => {
+  const theme = gameThemes[gameType] || gameThemes[GameType.DRAG];
+  
   return (
-    <div className="flex-1 flex flex-col items-center justify-center p-6 md:p-12 animate-in fade-in duration-1000">
+    <div className="flex-1 flex flex-col items-center justify-center p-6 md:p-12 animate-in fade-in duration-1000 relative">
+      <div className={`absolute top-0 left-0 w-full h-3 ${theme.classes}`} />
+
       <div className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-black text-slate-800 tracking-tight mb-4">Camino de Calma</h1>
-        <p className="text-slate-400 font-medium uppercase tracking-[0.2em] text-sm">Selecciona un mundo para comenzar</p>
+        <p className={`font-bold uppercase tracking-[0.2em] text-base ${theme.classes.split(' ')[1]} `}>
+          MODO DE JUEGO: {theme.name}
+        </p>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 w-full max-w-6xl">

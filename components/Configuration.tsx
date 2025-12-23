@@ -11,17 +11,31 @@ interface ConfigurationProps {
 
 const Configuration: React.FC<ConfigurationProps> = ({ settings, onUpdate, onClose, gameType }) => {
   const isDragMode = gameType === GameType.DRAG;
+  const isPuzzleMode = gameType === GameType.PUZZLE;
 
   // Etiquetas personalizadas según el modo de juego
-  const levels = isDragMode ? [
-    { level: WordLevel.COMPLETA, label: 'Palabra Completa (VACA)' },
-    { level: WordLevel.SEGMENTADA, label: 'Sílaba / Segmento (VA - CA)' },
-    { level: WordLevel.LETRA_POR_LETRA, label: 'Letra por Letra (V-A-C-A)' }
-  ] : [
+  let levelLabel = 'Velocidad de desplazamiento';
+  let levels = [
     { level: WordLevel.COMPLETA, label: 'Lento (Relajado)' },
     { level: WordLevel.SEGMENTADA, label: 'Normal (Fluido)' },
     { level: WordLevel.LETRA_POR_LETRA, label: 'Rápido (Desafío)' }
   ];
+
+  if (isDragMode) {
+    levelLabel = 'Nivel de Lectura';
+    levels = [
+      { level: WordLevel.COMPLETA, label: 'Palabra Completa (VACA)' },
+      { level: WordLevel.SEGMENTADA, label: 'Sílaba / Segmento (VA - CA)' },
+      { level: WordLevel.LETRA_POR_LETRA, label: 'Letra por Letra (V-A-C-A)' }
+    ];
+  } else if (isPuzzleMode) {
+    levelLabel = 'Tamaño del Puzzle';
+    levels = [
+      { level: WordLevel.COMPLETA, label: 'Zen (2 x 2)' },
+      { level: WordLevel.SEGMENTADA, label: 'Intermedio (3 x 3)' },
+      { level: WordLevel.LETRA_POR_LETRA, label: 'Desafío (4 x 4)' }
+    ];
+  }
 
   return (
     <div className="h-full flex flex-col p-8 overflow-y-auto">
@@ -49,24 +63,26 @@ const Configuration: React.FC<ConfigurationProps> = ({ settings, onUpdate, onClo
           />
         </section>
 
-        <section>
-          <div className="flex justify-between items-center mb-3">
-            <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Cantidad de Objetos</label>
-            <span className="text-blue-600 font-bold">{settings.itemCount}</span>
-          </div>
-          <input
-            type="range"
-            min="1"
-            max="12"
-            value={settings.itemCount}
-            onChange={(e) => onUpdate({ itemCount: parseInt(e.target.value) })}
-            className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-blue-500"
-          />
-        </section>
+        {!isPuzzleMode && (
+          <section>
+            <div className="flex justify-between items-center mb-3">
+              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Cantidad de Objetos</label>
+              <span className="text-blue-600 font-bold">{settings.itemCount}</span>
+            </div>
+            <input
+              type="range"
+              min="1"
+              max="12"
+              value={settings.itemCount}
+              onChange={(e) => onUpdate({ itemCount: parseInt(e.target.value) })}
+              className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-blue-500"
+            />
+          </section>
+        )}
 
         <section>
           <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">
-            {isDragMode ? 'Nivel de Lectura' : 'Velocidad de desplazamiento'}
+            {levelLabel}
           </label>
           <div className="flex flex-col gap-2">
             {levels.map(l => (

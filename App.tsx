@@ -6,6 +6,7 @@ import Configuration from './components/Configuration';
 import GameBoard from './components/GameBoard';
 import DriveBoard from './components/DriveBoard';
 import CatchBoard from './components/CatchBoard';
+import PuzzleBoard from './components/PuzzleBoard';
 import UniverseMenu from './components/UniverseMenu';
 import HomeMenu from './components/HomeMenu';
 
@@ -113,7 +114,7 @@ const App: React.FC = () => {
     setSettings(prev => ({ ...prev, ...newSettings }));
     setIsGameFinished(false);
     // Si se actualizan cosas críticas como cantidad de objetos, forzamos reinicio
-    if (newSettings.itemCount !== undefined || newSettings.universe !== undefined) {
+    if (newSettings.itemCount !== undefined || newSettings.universe !== undefined || newSettings.wordLevel !== undefined) {
       setGameKey(k => k + 1);
     }
   };
@@ -179,7 +180,7 @@ const App: React.FC = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
-          <UniverseMenu onSelect={handleSelectUniverse} currentUniverse={settings.universe} />
+          <UniverseMenu onSelect={handleSelectUniverse} currentUniverse={settings.universe} gameType={gameType} />
         </div>
       )}
 
@@ -190,8 +191,10 @@ const App: React.FC = () => {
             <GameBoard key={gameKey} settings={settings} onComplete={handleGameComplete} isFinished={isGameFinished} />
           ) : gameType === GameType.DRIVE ? (
             <DriveBoard key={gameKey} settings={settings} onComplete={handleGameComplete} isFinished={isGameFinished} isPaused={isPaused} onPauseToggle={() => setIsPaused(p => !p)} />
-          ) : (
+          ) : gameType === GameType.CATCH ? (
             <CatchBoard key={gameKey} settings={settings} onComplete={handleGameComplete} isFinished={isGameFinished} />
+          ) : (
+            <PuzzleBoard key={gameKey} settings={settings} onComplete={handleGameComplete} isFinished={isGameFinished} />
           )}
           
           <div className="absolute top-4 left-4 z-50 flex gap-3">
@@ -225,7 +228,7 @@ const App: React.FC = () => {
       )}
 
       {isGameFinished && view === 'GAME' && !isConfigOpen && (
-        <div className="absolute inset-0 z-[200] flex items-center justify-center bg-white/40 backdrop-blur-xl animate-in zoom-in duration-500">
+        <div className="absolute inset-0 z-[200] flex items-center justify-center bg-white/40 backdrop-blur-xl animate-in fade-in zoom-in duration-500">
           <div className="text-center p-14 bg-white rounded-[5rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.3)] border-[12px] border-emerald-50 max-w-[90%] relative">
              <div className="absolute -top-16 left-1/2 -translate-x-1/2 text-[10rem] animate-bounce">🎊</div>
              <h2 className="text-8xl mb-8 filter drop-shadow-lg">🌟</h2>

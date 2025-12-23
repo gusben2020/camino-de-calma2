@@ -18,50 +18,53 @@ const HomeMenu: React.FC<HomeMenuProps> = ({ onSelectGame }) => {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl px-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-7xl px-4">
         {/* Juego de Arrastrar */}
         <button
           onClick={() => onSelectGame(GameType.DRAG)}
-          className="group relative bg-white p-10 rounded-[3rem] shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border-b-8 border-blue-200 active:border-b-0 active:translate-y-1"
+          className="group relative bg-white p-8 rounded-[3rem] shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border-b-8 border-blue-200 active:border-b-0 active:translate-y-1"
         >
-          <div className="text-8xl mb-6 transform group-hover:scale-110 transition-transform duration-500">
+          <div className="text-7xl mb-6 transform group-hover:scale-110 transition-transform duration-500">
             🧩
           </div>
-          <h2 className="text-2xl font-black text-slate-700 uppercase mb-2">Arrastrar</h2>
-          <p className="text-slate-400 font-medium">Asocia figuras y palabras</p>
-          <div className="absolute top-4 right-4 bg-blue-100 text-blue-600 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
-            Jugar
-          </div>
+          <h2 className="text-xl font-black text-slate-700 uppercase mb-2">Arrastrar</h2>
+          <p className="text-slate-400 font-medium text-sm">Asocia figuras y palabras</p>
         </button>
 
         {/* Juego de Atrapa */}
         <button
           onClick={() => onSelectGame(GameType.CATCH)}
-          className="group relative bg-white p-10 rounded-[3rem] shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border-b-8 border-amber-200 active:border-b-0 active:translate-y-1"
+          className="group relative bg-white p-8 rounded-[3rem] shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border-b-8 border-amber-200 active:border-b-0 active:translate-y-1"
         >
-          <div className="text-8xl mb-6 transform group-hover:scale-110 transition-transform duration-500">
+          <div className="text-7xl mb-6 transform group-hover:scale-110 transition-transform duration-500">
             🍎
           </div>
-          <h2 className="text-2xl font-black text-slate-700 uppercase mb-2">Atrapar</h2>
-          <p className="text-slate-400 font-medium">Pasa el mouse para atrapar</p>
-          <div className="absolute top-4 right-4 bg-amber-100 text-amber-600 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
-            Jugar
+          <h2 className="text-xl font-black text-slate-700 uppercase mb-2">Atrapar</h2>
+          <p className="text-slate-400 font-medium text-sm">Pasa el mouse para atrapar</p>
+        </button>
+
+        {/* Juego de Puzzle */}
+        <button
+          onClick={() => onSelectGame(GameType.PUZZLE)}
+          className="group relative bg-white p-8 rounded-[3rem] shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border-b-8 border-violet-200 active:border-b-0 active:translate-y-1"
+        >
+          <div className="text-7xl mb-6 transform group-hover:scale-110 transition-transform duration-500">
+            🖼️
           </div>
+          <h2 className="text-xl font-black text-slate-700 uppercase mb-2">Puzzle</h2>
+          <p className="text-slate-400 font-medium text-sm">Arma las piezas 2x2, 3x3...</p>
         </button>
 
         {/* Juego de Conducir */}
         <button
           onClick={() => onSelectGame(GameType.DRIVE)}
-          className="group relative bg-white p-10 rounded-[3rem] shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border-b-8 border-emerald-200 active:border-b-0 active:translate-y-1"
+          className="group relative bg-white p-8 rounded-[3rem] shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border-b-8 border-emerald-200 active:border-b-0 active:translate-y-1"
         >
-          <div className="text-8xl mb-6 transform group-hover:scale-110 transition-transform duration-500">
+          <div className="text-7xl mb-6 transform group-hover:scale-110 transition-transform duration-500">
             🚜
           </div>
-          <h2 className="text-2xl font-black text-slate-700 uppercase mb-2">Conducir</h2>
-          <p className="text-slate-400 font-medium">Atrapa los elementos</p>
-          <div className="absolute top-4 right-4 bg-emerald-100 text-emerald-600 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
-            Jugar
-          </div>
+          <h2 className="text-xl font-black text-slate-700 uppercase mb-2">Conducir</h2>
+          <p className="text-slate-400 font-medium text-sm">Atrapa los elementos</p>
         </button>
       </div>
 

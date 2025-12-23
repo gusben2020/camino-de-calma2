@@ -13,7 +13,8 @@ export enum UniverseType {
 export enum GameType {
   DRAG = 'DRAG',
   DRIVE = 'DRIVE',
-  CATCH = 'CATCH'
+  CATCH = 'CATCH',
+  PUZZLE = 'PUZZLE'
 }
 
 export enum WordLevel {
