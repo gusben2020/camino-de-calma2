@@ -71,7 +71,8 @@ const App: React.FC = () => {
   const speakReinforcement = useCallback(() => {
     if (!settings.voiceEnabled) return;
     window.speechSynthesis.cancel();
-    const msg = `¡Excelente! ¡Lo has hecho muy bien ${settings.userName}!`;
+    // Mensaje actualizado según solicitud
+    const msg = `Excelente ${settings.userName}, lo has hecho muy bien`;
     const utterance = new SpeechSynthesisUtterance(msg.toLowerCase());
     utterance.lang = 'es-ES';
     utterance.rate = 1.0;
@@ -233,7 +234,8 @@ const App: React.FC = () => {
              <div className="absolute -top-16 left-1/2 -translate-x-1/2 text-[10rem] animate-bounce">🎊</div>
              <h2 className="text-8xl mb-8 filter drop-shadow-lg">🌟</h2>
              <h3 className="text-6xl font-black text-emerald-600 mb-6 tracking-tight uppercase">¡EXCELENTE!</h3>
-             <p className="text-2xl text-slate-400 mb-12 font-bold uppercase tracking-widest">Lo has hecho muy bien {settings.userName}</p>
+             {/* Mensaje visual actualizado */}
+             <p className="text-2xl text-slate-400 mb-12 font-bold uppercase tracking-widest">Excelente {settings.userName}, lo has hecho muy bien</p>
              <div className="flex flex-col md:flex-row gap-8 justify-center">
                <button onClick={handleRestart} className="px-16 py-6 bg-emerald-500 hover:bg-emerald-600 text-white text-2xl font-black rounded-full shadow-2xl transition-all active:scale-90 uppercase tracking-tighter">VOLVER A JUGAR</button>
                <button onClick={handleBack} className="px-16 py-6 bg-slate-100 hover:bg-slate-200 text-slate-500 text-2xl font-black rounded-full transition-all active:scale-90 uppercase tracking-tighter">MENU</button>
