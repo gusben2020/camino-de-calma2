@@ -109,6 +109,17 @@ const Configuration: React.FC<ConfigurationProps> = ({ settings, onUpdate, onClo
               onChange={(val) => onUpdate({ showWords: val })} 
             />
           </div>
+          
+          {isDragMode && (
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-slate-600">Armar Palabras (Objetos)</span>
+              <Toggle 
+                checked={settings.wordsAsObjects} 
+                onChange={(val) => onUpdate({ wordsAsObjects: val })} 
+              />
+            </div>
+          )}
+
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium text-slate-600">Voz Narradora</span>
             <Toggle 
